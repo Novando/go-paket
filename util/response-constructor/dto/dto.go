@@ -19,10 +19,10 @@ type ErrorValue struct {
 }
 
 type MetaNormal struct {
-	TotalData int `json:"totalData"`
-	TotalPage int `json:"totalPage"`
-	Page      int `json:"page"`
-	Size      int `json:"size"`
+	TotalData int64 `json:"totalData"`
+	TotalPage int64 `json:"totalPage"`
+	Page      int   `json:"page"`
+	Size      int   `json:"size"`
 }
 
 type MetaCursor struct {
@@ -46,6 +46,11 @@ type ArrayResponseWithMetaNormal[T any] struct {
 type ArrayResponseWithMetaCursor[T any] struct {
 	Data []T        `json:"data"`
 	Meta MetaCursor `json:"meta"`
+}
+
+type NormalPagination struct {
+	Page  int `query:"page" validate:"required,gte=1"`
+	Limit int `query:"limit" validate:"required,gte=5,lte=100"`
 }
 
 func (sr StandardResponse) Error() string {
@@ -73,4 +78,13 @@ func NewErrorResponse(err error) StandardResponse {
 
 func NewNotImplementedError() StandardResponse {
 	return StandardResponse{Code: "NOT_IMPLEMENTED_YET", Message: "The function is still on progress", Value: nil}
+}
+
+func (d *NormalPagination) ToMetaNormal(totalData int64) MetaNormal {
+	return MetaNormal{
+		TotalData: totalData,
+		TotalPage: (totalData + int64(d.Limit) - 1) / int64(d.Limit),
+		Page:      d.Page,
+		Size:      d.Limit,
+	}
 }
