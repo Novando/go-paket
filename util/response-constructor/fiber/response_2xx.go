@@ -39,22 +39,36 @@ func NewArrayResponse[T any, M dto.MetaNormal | dto.MetaCursor | any](val []T, m
 
 	switch m := any(meta).(type) {
 	case dto.MetaNormal:
-		return dto.StandardResponse{
+		var res = dto.StandardResponse{
 			Value:   dto.ArrayResponseWithMetaNormal[T]{Data: val, Meta: m},
 			Code:    "SUCCESS",
 			Message: msg[0],
 		}
+		if val == nil {
+			res.Value = dto.ArrayResponseWithMetaNormal[string]{Data: []string{}, Meta: m}
+		}
+		return res
+
 	case dto.MetaCursor:
-		return dto.StandardResponse{
+		var res = dto.StandardResponse{
 			Value:   dto.ArrayResponseWithMetaCursor[T]{Data: val, Meta: m},
 			Code:    "SUCCESS",
 			Message: msg[0],
 		}
+		if val == nil {
+			res.Value = dto.ArrayResponseWithMetaCursor[string]{Data: []string{}, Meta: m}
+		}
+		return res
+
 	default:
-		return dto.StandardResponse{
+		var res = dto.StandardResponse{
 			Value:   dto.ArrayResponse[T]{Data: val},
 			Code:    "SUCCESS",
 			Message: msg[0],
 		}
+		if val == nil {
+			res.Value = dto.ArrayResponse[string]{Data: []string{}}
+		}
+		return res
 	}
 }
