@@ -3,6 +3,7 @@ package google
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"cloud.google.com/go/storage"
@@ -19,6 +20,7 @@ func GenerateSignedURL(ctx context.Context, serviceAccountPath, bucketName, obje
 	defer client.Close()
 
 	// Generate the signed URL
+	objectFullPath = strings.TrimPrefix(objectFullPath, bucketName+"/")
 	url, err := client.Bucket(bucketName).SignedURL(objectFullPath, &storage.SignedURLOptions{
 		Expires: time.Now().Add(6 * time.Hour), // URL valid for 1 hour
 		Method:  "GET",
