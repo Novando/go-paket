@@ -13,12 +13,10 @@ func HandleTx(ctx context.Context, err error) {
 	if !ok {
 		return
 	}
-	println("hanleTx")
+
 	if err != nil {
-		println("rollback")
 		_ = tx.Rollback(ctx)
 	} else {
-		println("commit")
 		_ = tx.Commit(ctx)
 	}
 }
