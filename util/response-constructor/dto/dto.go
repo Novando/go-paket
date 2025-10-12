@@ -13,6 +13,13 @@ type StandardResponse struct {
 	Status  int    `json:"-"`
 }
 
+type TypedStandardResponse[T any] struct {
+	Value   T      `json:"value"`
+	Code    string `json:"code"`
+	Message string `json:"message"`
+	Status  int    `json:"-"`
+}
+
 type ErrorValue struct {
 	Field string `json:"field"`
 	Error string `json:"error"`
